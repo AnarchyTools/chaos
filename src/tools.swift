@@ -31,31 +31,35 @@ protocol Tool {
     var description: String { get }
 }
 
-extension Tool {
-    func run(args: [String] = []) {
-        let argstr = args.reduce("") { "\($0) \($1)" }
-        system("\(tool) \(argstr)")
+class ATBuildTool : Tool {
+    let tool = "atbuild"
+    let name: String
+    let description: String
+    
+    private init(name: String, description: String) {
+        self.name = name
+        self.description = description
+    }
+    
+    func run(args: [String]) {
+        precondition(args.count > 0)
+        
+        // Assume the tool path is the same directory as the `chaos` tool.
+        var path = args[0]
+        path.removeRange(path.endIndex.advancedBy(-5)..<path.endIndex)
+        let options = args.dropFirst().dropFirst().map { $0 }.reduce("") { "\($0) \($1)" }
+        system("\(path)\(tool) \(name) \(options)")
     }
 }
 
-final class BuildTool : Tool {
-    let name = "build"
-    let tool = "atbuild"
-    let description = "Uses the the `atbuild` tool to build a project."
-
-    func run(args: [String] = []) {
-        let argstr = args.reduce("") { "\($0) \($1)" }
-        system("\(tool) \(name) \(argstr)")
+final class BuildTool : ATBuildTool {
+    init() {
+        super.init(name: "build", description: "Uses the the `atbuild` tool to build a project.")
     }
 }
 
-final class TestTool : Tool {
-    let name = "test"
-    let tool = "atbuild"
-    let description = "Uses the the `atbuild` tool to test a project."
-
-    func run(args: [String] = []) {
-        let argstr = args.reduce("") { "\($0) \($1)" }
-        system("\(tool) \(name) \(argstr)")
+final class TestTool : ATBuildTool {
+    init() {
+        super.init(name: "test", description: "Uses the the `atbuild` tool to test a project.")
     }
 }

@@ -48,8 +48,6 @@ if Process.arguments.count == 1 {
 }
 
 let command = Process.arguments[1]
-let args = Process.arguments.dropFirst().dropFirst().map { $0 }
-
 switch command {
 case "help", "--help", "-help":
     showUsage(withVersion: true)
@@ -58,7 +56,7 @@ case "help", "--help", "-help":
 default:
     let tool = tools.filter { $0.name == command }.first
     if let tool = tool {
-        tool.run()
+        tool.run(Process.arguments)
     }
     else {
         print("unknown command: \(command)")

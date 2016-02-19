@@ -25,5 +25,19 @@
       :output-type "executable"
       :publish-product true
     }
+    
+    :test {
+      :dependencies ["build" "test-stubs"]
+      :tool "shell"
+      :script "tests/tests.sh"
+    }
+    
+    :test-stubs {
+      :tool "atllbuild"
+      :sources ["tests/stubs/atbuild.swift"]
+      :name "atbuild"
+      :output-type "executable"
+      :publish-product true
+    }
   }
 )
